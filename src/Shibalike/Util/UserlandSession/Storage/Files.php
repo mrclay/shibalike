@@ -2,6 +2,9 @@
 
 namespace Shibalike;
 
+/**
+ * File session storage.
+ */
 class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorage {
     
     const DEFAULT_PREFIX = 'SHIBALIKEID_';

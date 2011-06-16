@@ -50,7 +50,9 @@ class Util_UserlandSession {
     protected $_storage;
 
     /**
-     * @param Util_UserlandSession_IStorage $storage 
+     * @param Util_UserlandSession_IStorage $storage When using the Files handler, make
+     * sure to use a separate instance for different session names. If you re-use the
+     * instance, you could end up accessing files under the wrong prefix. 
      */
     public function __construct(Util_UserlandSession_IStorage $storage)
     {
