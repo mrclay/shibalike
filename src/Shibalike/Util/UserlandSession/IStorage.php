@@ -5,11 +5,11 @@ namespace Shibalike;
 interface Util_UserlandSession_IStorage {
     
     /**
-     * @param string $savePath
+     * @param string $_ingored
      * @param string $sessionName
      * @return bool
      */
-    public function open($savePath = '', $sessionName = '');
+    public function open($_ingored = '', $sessionName = '');
     
     /**
      * @return bool
