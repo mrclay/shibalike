@@ -7,15 +7,18 @@ namespace Shibalike;
  */
 class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorage {
     
-    const DEFAULT_PREFIX = 'SHIBALIKEID_';
-    
     /**
-     * @param type $path path to store session files
-     * @param type $useLocking use file-locking?
+     * @param string $name session name (to be used in cookie)
+     * @param array $options for the storage container
      */
-    public function __construct($path = null, $useLocking = true)
-    {
-        $this->_locking = $useLocking;
+    public function __construct($name = 'SHIBALIKEID', array $options = array()) {
+        $this->_name = $name;
+        $this->_locking = isset($options['flock'])
+            ? (bool) $options['flock']
+            : true;
+        $path = empty($options['path']) 
+            ? null 
+            : $options['path'];
         if (is_string($path)) {
             $path = rtrim(preg_replace('/^\\d+;/', '', $path), '/\\');
             if ($this->_isValidPath($path)) {
@@ -35,6 +38,16 @@ class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorag
         }
     }
     
+    
+    /**
+     * @return string
+     */
+    public function getName() 
+    {
+        return $this->_name;
+    }
+    
+    
     /**
      * Get path for storing session files
      * @return string
@@ -45,15 +58,11 @@ class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorag
     }
     
     /**
-     * @param string $_ingored
-     * @param string $sessionName
      * @return bool
      */
-    public function open($_ingored = '', $sessionName = '')
+    public function open()
     {
-        if ($sessionName) {
-            $this->_prefix = $sessionName . '_';
-        }
+        
     }
     
     /**
@@ -61,7 +70,7 @@ class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorag
      */
     public function close()
     {
-        $this->_prefix = self::DEFAULT_PREFIX;
+        
     }
     
     /**
@@ -126,7 +135,7 @@ class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorag
         //echo "Path: " . $d->path . "\n";
         $t = time();
         while (false !== ($entry = $d->read())) {
-            if (0 === strpos($entry, $this->_prefix)) {
+            if (0 === strpos($entry, $this->_name . '_')) {
                 $file = $this->_path . DIRECTORY_SEPARATOR . $entry;
                 $mtime = filemtime($file);
                 if (false !== $mtime) {
@@ -156,12 +165,12 @@ class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorag
     
     protected function _getFilePath($id)
     {
-        return $this->_path . DIRECTORY_SEPARATOR . $this->_prefix . $id;
+        return $this->_path . DIRECTORY_SEPARATOR . $this->_name . '_';
     }
     
     protected $_path = null;
     
-    protected $_prefix = self::DEFAULT_PREFIX;
-    
     protected $_locking;
+    
+    protected $_name;
 }

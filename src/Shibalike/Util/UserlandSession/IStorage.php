@@ -5,11 +5,20 @@ namespace Shibalike;
 interface Util_UserlandSession_IStorage {
     
     /**
-     * @param string $_ingored
-     * @param string $sessionName
+     * @param string $name session name (to be used in cookie)
+     * @param array $options for the storage container
+     */
+    public function __construct($name = 'SHIBALIKEID', array $options = array());
+    
+    /**
+     * @return string
+     */
+    public function getName();
+        
+    /**
      * @return bool
      */
-    public function open($_ingored = '', $sessionName = '');
+    public function open();
     
     /**
      * @return bool

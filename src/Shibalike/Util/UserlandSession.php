@@ -7,12 +7,15 @@ namespace Shibalike;
  * setcookie(), there's no global state in this implementation; you can have an active
  * session beside another instance or beside the native session.
  * 
- * Only name and id have get/setter functions. The other options are public properties.
+ * Only id has a get/setter function. The other options are public properties.
  * 
- * There's no handler/module because one has to inject a storage handler into the
- * constructor. This is why save_path was moved to the Files handler. 
+ * There's no set_handler/module because one has to inject a storage handler into the
+ * constructor. This also moved the save_path option to the Files handler.
  * 
- * The biggest difference is that you can set cache_limiter = '', meaning no headers 
+ * Session name is set in the storage handler, which prevents the user from mistakenly
+ * re-using a storage handler for multiple sessions.  
+ * 
+ * The biggest usage difference is that you can set cache_limiter = '', meaning no headers 
  * (other than Set-Cookie) will be sent at start(). This may be useful if you need to use 
  * this class in tandem with native sessions.
  * 
@@ -54,13 +57,43 @@ class Util_UserlandSession {
 
 
     /**
-     * @param Util_UserlandSession_IStorage $storage When using the Files handler, make
-     * sure to use a separate instance for different session names. If you re-use the
-     * instance, you could end up accessing files under the wrong prefix. 
+     * Users should consider using factory() to prevent cookie/storage name collisions.
+     * 
+     * @param Util_UserlandSession_IStorage $storage
      */
     public function __construct(Util_UserlandSession_IStorage $storage)
     {
         $this->_storage = $storage;
+        $this->_name = $storage->getName();
+        if (! preg_match('/^[a-zA-Z0-9]+$/', $this->_name)) {
+            throw new \Exception('UserlandSession_Storage name must be alphanumeric');
+        }
+    }
+    
+    /**
+     * More safely create a session. This function will only let you create sessions with 
+     * names that are unique (case-insentively) to avoid creating cookie/storage 
+     * collisions. It also forbids using a name that matches the global setting session.name.
+     * 
+     * @param Util_UserlandSession_IStorage $storage (will use Files if not specified)
+     * @return Util_UserlandSession
+     */
+    public static function factory(Util_UserlandSession_IStorage $storage = null)
+    {
+        static $activeNames = array();
+        static $i = 1;
+        
+        if (null === $storage) {
+            $storage = new \Shibalike\Util_UserlandSession_Storage_Files("SHIBALIKE$i");
+            $i++;
+        }
+        $activeNames[strtoupper(ini_get('session.name'))] = true;
+        $name = strtoupper($storage->getName());
+        if (isset($activeNames[$name])) {
+            return false;
+        }
+        $activeNames[$name] = true;
+        return new self($storage);
     }
 
     /**
@@ -73,31 +106,9 @@ class Util_UserlandSession {
     public function id($id = null)
     {
         if (! $this->_id && is_string($id) && $this->_storage->idIsValid($id)) {
-            $this->_idFromUser = $id;
+            $this->_requestedId = $id;
         }
         return $this->_id;
-    }
-    
-    /**
-     * Get the session name (name used in the cookie), or set it. If the session is active,
-     * this must be called before any output is sent.
-     * 
-     * @param string $name
-     * @return type 
-     */
-    public function name($name = null)
-    {
-        if (is_string($name) && preg_match('/^[a-zA-Z0-9]+$/', $name)) {
-            if ($this->_id) {
-                // must be able to persist to change name
-                if ($this->remove_cookie() && $this->_set_cookie($name, $this->_id)) {
-                    $this->_name = $name;
-                }
-            } else {
-                $this->_name = $name;
-            }
-        }
-        return $this->_name;
     }
     
     /**
@@ -125,7 +136,7 @@ class Util_UserlandSession {
     public function persisted_data_exists($id)
     {
         if (! $this->_id) {
-            $this->_storage->open('', $this->_name);
+            $this->_storage->open();
         }
         $ret = (bool) $this->_storage->read($id);
         if (! $this->_id) {
@@ -157,10 +168,10 @@ class Util_UserlandSession {
             return false;
         }
         $this->data = array();
-        if ($this->_idFromUser) {
-            $this->_set_cookie($this->_name, $this->_idFromUser);
-            $this->_id = $this->_idFromUser;
-            $this->_idFromUser = null;
+        if ($this->_requestedId) {
+            $this->_set_cookie($this->_name, $this->_requestedId);
+            $this->_id = $this->_requestedId;
+            $this->_requestedId = null;
         } else {
             $id = $this->get_id_from_cookie();
             if ($id) {
@@ -173,7 +184,7 @@ class Util_UserlandSession {
             $this->_storage->gc($this->gc_maxlifetime);
         }
         // open storage
-        $this->_storage->open('', $this->_name);
+        $this->_storage->open();
         
         // try data fetch
         if (! $this->_load_data()) {   
@@ -417,7 +428,12 @@ class Util_UserlandSession {
      * 
      * @var string 
      */
-    protected $_idFromUser = '';
+    protected $_requestedId = '';
     
-    protected $_name = 'SHIBALIKEID';
+    /**
+     * Copy of session name from storage handler
+     * 
+     * @var string
+     */
+    protected $_name;
 }
