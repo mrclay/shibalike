@@ -2,7 +2,7 @@
 
 namespace Shibalike;
 
-class StateManager_ZendSession implements \Shibalike\IStateManager {
+class StateManager_ZendSession implements IStateManager {
 
     /**
      * @var \Zend_Session_Namespace
@@ -13,7 +13,7 @@ class StateManager_ZendSession implements \Shibalike\IStateManager {
         $this->_session = $session;
     }
 
-    public function setUser(\Shibalike\User $user) {
+    public function setUser(User $user) {
         $this->_session->shibalikeUser = $user;
     }
 
