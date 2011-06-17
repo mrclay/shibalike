@@ -2,7 +2,7 @@
 
 namespace Shibalike;
 
-use \Shibalike\Util_UserlandSession as Sess;
+use Util_UserlandSession as Sess;
 
 class StateManager_UserlandSession implements IStateManager {
 
@@ -20,7 +20,7 @@ class StateManager_UserlandSession implements IStateManager {
         $this->_session->start();
     }
 
-    public function setUser(\Shibalike\User $user) {
+    public function setUser(User $user) {
         $this->_session->data['shibalikeUser'] = $user;
     }
 
