@@ -2,6 +2,8 @@
 
 namespace Shibalike;
 
+use Shibalike\Attr\IStore;
+
 /**
  * Component for marking user as authenticated in the state manager with attributes pulled
  * from a store. For use in a "login" script.
@@ -30,12 +32,12 @@ namespace Shibalike;
 class IdP {
 
     /**
-     * @var Attr_IStore
+     * @var \Shibalike\Attr\IStore
      */
     protected $_store;
 
     /**
-     * @var IStateManager
+     * @var \Shibalike\IStateManager
      */
     protected $_stateMgr;
 
@@ -44,7 +46,7 @@ class IdP {
      */
     protected $_urls;
 
-    public function __constructor(IStateManager $stateMgr, Attr_IStore $store, UrlConfig $urls) {
+    public function __construct(IStateManager $stateMgr, IStore $store, UrlConfig $urls) {
         $this->_stateMgr = $stateMgr;
         $this->_store = $store;
         $this->_urls = $urls;
@@ -105,7 +107,7 @@ class IdP {
     public function logout($redirect = true, $exitAfterRedirect = true) {
         $this->_stateMgr->forget();
         if ($redirect) {
-            $this->redirect($this->_urls->logoutUrl, $exitAfterRedirect);
+            $this->redirect($this->_urls->postLogoutUrl, $exitAfterRedirect);
         }
     }
 

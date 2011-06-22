@@ -3,6 +3,8 @@
 namespace Shibalike\StateManager;
 
 use Shibalike\IStateManager;
+use Shibalike\User;
+use Shibalike\Util\UserlandSession as Sess;
 
 class UserlandSession implements IStateManager {
 
@@ -49,5 +51,9 @@ class UserlandSession implements IStateManager {
 
     public function forget() {
         $this->_session->destroy(true);
+    }
+    
+    public function writeClose() {
+        $this->_session->write_close();
     }
 }

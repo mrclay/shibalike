@@ -72,8 +72,8 @@ class UserlandSession {
     {
         $this->_storage = $storage;
         $this->_name = $storage->getName();
-        if (! preg_match('/^[a-zA-Z0-9]+$/', $this->_name)) {
-            throw new \Exception('UserlandSession_Storage name must be alphanumeric');
+        if (! preg_match('/^[a-zA-Z0-9_]+$/', $this->_name)) {
+            throw new \Exception('UserlandSession\\Storage name may contain only a-zA-Z_');
         }
     }
     

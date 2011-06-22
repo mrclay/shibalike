@@ -5,7 +5,6 @@ namespace Shibalike;
 /**
  * Component for populating $_SERVER vars from a state manager
  *
- * Usage:
  * <code>
  * $sp = new Shibalike\SP(...);
  * $_SERVER = $sp->merge($_SERVER);
@@ -30,7 +29,7 @@ class SP {
      */
     protected $_urls;
 
-    public function __constructor(IStateManager $stateMgr, UrlConfig $urls) {
+    public function __construct(IStateManager $stateMgr, UrlConfig $urls) {
         $this->_stateMgr = $stateMgr;
         $this->_urls = $urls;
     }
@@ -52,11 +51,12 @@ class SP {
     }
 
     /**
-     * Redirect the user to your shibalike login script
+     * Close an open state manager/session and redirect the user to your shibalike login script
      *
      * @param bool $exitAfter exit after redirecting?
      */
     public function redirect($exitAfter = true) {
+        $this->_stateMgr->writeClose();
         if (session_id()) {
             session_write_close();
         }
@@ -77,16 +77,17 @@ class SP {
      * Get $_SERVER merged with user attributes from the state manager
      *
      * <code>
-     * $_SERVER = $sp->merge($_SERVER);
+     * $_SERVER = $sp->mergeAttrs($_SERVER);
      * </code>
      *
      * @param array $server
      * @return array
      */
-    public function merge($server) {
+    public function mergeAttrs($server) {
         $user = $this->getUser();
         if ($user) {
             $server = array_merge($server, $user->getAttrs());
+            $server['REMOTE_USER'] = $user->getUsername();
         }
         return $server;
     }

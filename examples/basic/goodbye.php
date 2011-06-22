@@ -1,1 +1,1 @@
-Goodbye, fair user.
+Goodbye, fair user. <a href="./">Access protected resource</a>

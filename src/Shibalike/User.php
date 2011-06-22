@@ -13,6 +13,8 @@ class User {
         if (empty($attrs)) {
             throw new \Exception("attrs must contain at least one attribute");
         }
+        $this->_username = $username;
+        $this->_attrs = $attrs;
     }
 
     /**

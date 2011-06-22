@@ -167,7 +167,7 @@ class Files implements IStorage {
     
     protected function _getFilePath($id)
     {
-        return $this->_path . DIRECTORY_SEPARATOR . $this->_name . '_';
+        return $this->_path . DIRECTORY_SEPARATOR . $this->_name . '_' . $id;
     }
     
     protected $_path = null;

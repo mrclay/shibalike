@@ -33,4 +33,9 @@ interface IStateManager {
      * Forget all state data
      */
     public function forget();
+    
+    /**
+     * Persist any session data to disk (e.g. called before a redirect)
+     */
+    public function writeClose();
 }

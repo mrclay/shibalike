@@ -37,4 +37,8 @@ class StateManager_ZendSession implements IStateManager {
     public function forget() {
         $this->_session->unsetAll();
     }
+    
+    public function writeClose() {
+        \Zend_Session::writeClose();
+    }
 }
