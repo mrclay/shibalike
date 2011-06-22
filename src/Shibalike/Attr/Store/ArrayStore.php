@@ -1,8 +1,10 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Attr\Store;
 
-class Attr_Store_Array implements \Shibalike\Attr_IStore {
+use Shibalike\Attr\IStore;
+
+class ArrayStore implements IStore {
     protected $_storage = array();
 
     public function __construct(array $source) {

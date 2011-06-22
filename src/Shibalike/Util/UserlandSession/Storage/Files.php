@@ -1,11 +1,13 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Util\UserlandSession\Storage;
+
+use Shibalike\Util\UserlandSession\IStorage;
 
 /**
  * File session storage.
  */
-class Util_UserlandSession_Storage_Files implements Util_UserlandSession_IStorage {
+class Files implements IStorage {
     
     /**
      * @param string $name session name (to be used in cookie)

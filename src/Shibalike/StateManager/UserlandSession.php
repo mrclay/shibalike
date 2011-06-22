@@ -1,18 +1,18 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\StateManager;
 
-use Util_UserlandSession as Sess;
+use Shibalike\IStateManager;
 
-class StateManager_UserlandSession implements IStateManager {
+class UserlandSession implements IStateManager {
 
     /**
-     * @var \Shibalike\Util_UserlandSession
+     * @var \Shibalike\Util\UserlandSession
      */
     protected $_session;
 
     /**
-     * @param \Shibalike\Util_UserlandSession $session 
+     * @param \Shibalike\Util\UserlandSession $session 
      */
     public function __construct(Sess $session)
     {

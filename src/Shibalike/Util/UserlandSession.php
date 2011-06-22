@@ -1,6 +1,12 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Util;
+
+use Shibalike\Util\UserlandSession\IStorage;
+
+use Shibalike\Util\IdGenerator;
+
+use Shibalike\Util\UserlandSession\Storage\Files;
 
 /**
  * A PHP emulation of native session behavior. Other than HTTP IO (header() and 
@@ -21,7 +27,7 @@ namespace Shibalike;
  * 
  * Also a tiny session fixation vulnerability has been prevented in start().
  */
-class Util_UserlandSession {
+class UserlandSession {
     
     const CACHE_LIMITER_NONE = '';
     const CACHE_LIMITER_PUBLIC = 'public';
@@ -37,6 +43,7 @@ class Util_UserlandSession {
     public $gc_maxlifetime = 1400;
     public $gc_probability = 1;
     public $gc_divisor = 100;
+    public $id_length = 40;
     public $cache_limiter = self::CACHE_LIMITER_NOCACHE;
     public $cache_expire = 180;
     
@@ -48,7 +55,7 @@ class Util_UserlandSession {
     public $data = null;
     
     /**
-     * @return Util_UserlandSession_IStorage 
+     * @return Shibalike\Util\UserlandSession\IStorage
      */
     public function get_storage()
     {
@@ -59,9 +66,9 @@ class Util_UserlandSession {
     /**
      * Users should consider using factory() to prevent cookie/storage name collisions.
      * 
-     * @param Util_UserlandSession_IStorage $storage
+     * @param Shibalike\Util\UserlandSession\IStorage $storage
      */
-    public function __construct(Util_UserlandSession_IStorage $storage)
+    public function __construct(IStorage $storage)
     {
         $this->_storage = $storage;
         $this->_name = $storage->getName();
@@ -75,16 +82,16 @@ class Util_UserlandSession {
      * names that are unique (case-insentively) to avoid creating cookie/storage 
      * collisions. It also forbids using a name that matches the global setting session.name.
      * 
-     * @param Util_UserlandSession_IStorage $storage (will use Files if not specified)
-     * @return Util_UserlandSession
+     * @param Shibalike\Util\UserlandSession\IStorage $storage (will use Files if not specified)
+     * @return Shibalike\Util\UserlandSession
      */
-    public static function factory(Util_UserlandSession_IStorage $storage = null)
+    public static function factory(IStorage $storage = null)
     {
         static $activeNames = array();
         static $i = 1;
         
         if (null === $storage) {
-            $storage = new \Shibalike\Util_UserlandSession_Storage_Files("SHIBALIKE$i");
+            $storage = new Files("SHIBALIKE$i");
             $i++;
         }
         $activeNames[strtoupper(ini_get('session.name'))] = true;
@@ -174,9 +181,9 @@ class Util_UserlandSession {
             $this->_requestedId = null;
         } else {
             $id = $this->get_id_from_cookie();
-            if ($id) {
-                $this->_id = $id;
-            }
+            $this->_id = $id
+                ? $id
+                : IdGenerator::generateBase32Id($this->id_length);
         }
         // should we call GC?
         $rand = mt_rand(1, $this->gc_divisor);
@@ -187,11 +194,11 @@ class Util_UserlandSession {
         $this->_storage->open();
         
         // try data fetch
-        if (! $this->_load_data()) {   
+        if (! $this->_load_data()) {
             // unlike the native PHP session, we don't let users choose their own
             // session IDs if there's no data. This prevents session fixation through 
             // cookies (very hard for an attacker, but why leave this door open?).
-            $this->_id = self::generate_new_id();
+            $this->_id = IdGenerator::generateBase32Id($this->id_length);
             $this->_set_cookie($this->_name, $this->_id);
         }
         // send optional cache limiter
@@ -283,7 +290,7 @@ class Util_UserlandSession {
         }
         $this->remove_cookie();
         $oldId = $this->_id;
-        $this->_id = self::generate_new_id();
+        $this->_id = IdGenerator::generateBase32Id($this->id_length);
         $this->_set_cookie($this->_name, $this->_id);
         if ($oldId && $delete_old_session) {
             $this->_storage->destroy($oldId);
@@ -301,69 +308,6 @@ class Util_UserlandSession {
         return setcookie($this->_name, '', time() - 86400, $this->cookie_path, $this->cookie_domain, (bool) $this->cookie_secure, (bool) $this->cookie_httponly);
     }
     
-    /**
-     * Create a random alphanumeric string
-     * 
-     * @param int $length
-     * @return string 
-     */
-    public static function generate_new_id($length = 40)
-	{
-        // generate random bytes, more than we need (adapted from phpass)
-        $numBytes = $length;
-        $randomState = microtime();
-        if (function_exists('getmypid')) {
-			$randomState .= getmypid();
-        }        
-        $bytes = '';
-        if (@is_readable('/dev/urandom') && ($fh = @fopen('/dev/urandom', 'rb'))) {
-            $bytes = fread($fh, $numBytes);
-            fclose($fh);
-        }
-        if (strlen($bytes) < $numBytes) {
-            $bytes = '';
-            for ($i = 0; $i < $numBytes; $i += 16) {
-                $randomState = md5(microtime() . $randomState . mt_rand(0, mt_getrandmax()));
-                $bytes .= pack('H*', md5($randomState));
-            }
-            $bytes = substr($bytes, 0, $numBytes);
-        }
-        // convert bytes to base36, strip non-alphanumerics), return a random chunk
-        return substr(self::_bin_to_base32($bytes), 0, $length);
-	}
-    
-    /**
-     * @link http://inquisitivecocoa.com/2009/08/10/a-basic-base32_encode-function-for-php/
-     * @param string $bytes
-     * @return string 
-     * @license unknown
-     */
-    static protected function _bin_to_base32($bytes) {
-        $hex = unpack('H*', $bytes);
-        $hex = $hex[1];
-        $binary = '';
-        for ($i = 0, $l = strlen($hex); $i < $l; $i++) {
-            $binary .= decbin(hexdec($hex[$i]));
-        }
-        
-        $binaryLength = strlen($binary);
-        $base32_characters = "0123456789abcdefghijklmnopqrstuv";
-        $currentPosition = 0;
-        $output = '';
-
-        while ($currentPosition < $binaryLength) {
-            $bits = substr($binary, $currentPosition, 5);
-            // don't worry about padding last 5-bit number
-            
-            // Convert the 5 bits into a decimal number
-            // and append the matching character to $output
-            $output .= $base32_characters[bindec($bits)];
-            $currentPosition += 5;
-        }
-        // don't bother padding
-        return $output;
-    }
-
     /**
      * Get a GMT formatted date for use in HTTP headers
      * 

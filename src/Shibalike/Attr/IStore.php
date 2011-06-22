@@ -1,8 +1,8 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Attr;
 
-interface Attr_IStore {
+interface IStore {
 
     /**
      * Return "shibboleth" attributes for a user

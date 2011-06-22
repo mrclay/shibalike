@@ -1,5 +1,5 @@
 <?php
 
-require __DIR__ . '/../../src/Shibalike/Util/UserlandSession.php';
+require __DIR__ . '/../../src/Shibalike/Util/IdGenerator.php';
 
-echo Shibalike\Util_UserlandSession::generate_new_id();
+echo Shibalike\Util\IdGenerator::generateBase32Id();

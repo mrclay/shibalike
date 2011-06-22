@@ -1,8 +1,8 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Util\UserlandSession;
 
-interface Util_UserlandSession_IStorage {
+interface IStorage {
     
     /**
      * @param string $name session name (to be used in cookie)

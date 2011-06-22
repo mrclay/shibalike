@@ -1,8 +1,10 @@
 <?php
 
-namespace Shibalike;
+namespace Shibalike\Attr\Store;
 
-class Attr_Store_ZendDb implements \Shibalike\Attr_IStore {
+use Shibalike\Attr\IStore;
+
+class ZendDb implements IStore {
     /**
      * @var \Zend_Db_Adapter_Abstract
      */
