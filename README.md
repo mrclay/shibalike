@@ -66,7 +66,6 @@ class based on an existing set of callbacks used in session_set_save_handler().
 * A default state manager, based on `UserLandSession`.
 * A simple attribute provider based on Zend Db and a single table.
 * A simple attribute provider based on a static array.
-
 * There's a [basic example](https://github.com/mrclay/shibalike/tree/master/examples/basic) demonstrating a crude but operational usage of the system.
 * There's a [demonstration of UserlandSession](https://github.com/mrclay/shibalike/blob/master/examples/UserlandSession/simultaneous.php) showing 3 simultaneous sessions, including a native one.
 
