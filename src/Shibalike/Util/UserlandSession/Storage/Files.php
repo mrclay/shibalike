@@ -8,19 +8,18 @@ use Shibalike\Util\UserlandSession\IStorage;
  * File session storage.
  */
 class Files implements IStorage {
-    
+
     /**
      * @param string $name session name (to be used in cookie)
      * @param array $options for the storage container
+     *    'flock' : lock files for read/write (true by default)
+     *    'path' : save path for files
      */
-    public function __construct($name = 'SHIBALIKEID', array $options = array()) {
+    public function __construct($name = 'SHIBALIKEID', array $options = array())
+    {
         $this->_name = $name;
-        $this->_locking = isset($options['flock'])
-            ? (bool) $options['flock']
-            : true;
-        $path = empty($options['path']) 
-            ? null 
-            : $options['path'];
+        $this->_locking = isset($options['flock']) ? (bool) $options['flock'] : true;
+        $path = empty($options['path']) ? null : $options['path'];
         if (is_string($path)) {
             $path = rtrim(preg_replace('/^\\d+;/', '', $path), '/\\');
             if ($this->_isValidPath($path)) {
@@ -39,17 +38,15 @@ class Files implements IStorage {
             }
         }
     }
-    
-    
+
     /**
      * @return string
      */
-    public function getName() 
+    public function getName()
     {
         return $this->_name;
     }
-    
-    
+
     /**
      * Get path for storing session files
      * @return string
@@ -58,7 +55,7 @@ class Files implements IStorage {
     {
         return $this->_path;
     }
-    
+
     /**
      * @return bool
      */
@@ -66,7 +63,7 @@ class Files implements IStorage {
     {
         
     }
-    
+
     /**
      * @return bool
      */
@@ -74,7 +71,7 @@ class Files implements IStorage {
     {
         
     }
-    
+
     /**
      * @param string $id
      * @return string|false
@@ -96,7 +93,7 @@ class Files implements IStorage {
         }
         return false;
     }
-    
+
     /**
      * @param string $id
      * @param string $data
@@ -105,15 +102,13 @@ class Files implements IStorage {
     public function write($id, $data)
     {
         $file = $this->_getFilePath($id);
-        if (is_file($file) && ! is_writable($file)) {
+        if (is_file($file) && !is_writable($file)) {
             return false;
         }
-        $flag = $this->_locking
-            ? LOCK_EX
-            : null;
+        $flag = $this->_locking ? LOCK_EX : null;
         return (bool) file_put_contents($file, $data, $flag);
     }
-    
+
     /**
      * @param string $id
      * @return bool
@@ -126,7 +121,7 @@ class Files implements IStorage {
         }
         return false;
     }
-    
+
     /**
      * @param int $maxLifetime
      * @return bool
@@ -150,7 +145,7 @@ class Files implements IStorage {
         }
         $d->close();
     }
-    
+
     /**
      * @param string $id
      * @return bool
@@ -159,20 +154,29 @@ class Files implements IStorage {
     {
         return preg_match('/^[a-zA-Z0-9\\-\\_]+$/', $id);
     }
-    
+
     protected function _isValidPath($path)
     {
         return $path && is_dir($path) && is_writable($path);
     }
-    
+
     protected function _getFilePath($id)
     {
         return $this->_path . DIRECTORY_SEPARATOR . $this->_name . '_' . $id;
     }
-    
+
+    /**
+     * @var string
+     */
     protected $_path = null;
     
+    /**
+     * @var bool
+     */
     protected $_locking;
     
+    /**
+     * @var string
+     */
     protected $_name;
 }

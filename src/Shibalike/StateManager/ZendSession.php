@@ -9,36 +9,44 @@ class StateManager_ZendSession implements IStateManager {
      */
     protected $_session;
 
-    public function __construct(\Zend_Session_Namespace $session) {
+    public function __construct(\Zend_Session_Namespace $session)
+    {
         $this->_session = $session;
     }
 
-    public function setUser(User $user) {
+    public function setUser(User $user)
+    {
         $this->_session->shibalikeUser = $user;
     }
 
-    public function getUser() {
+    public function getUser()
+    {
         return $this->_session->shibalikeUser;
     }
 
-    public function unsetUser() {
+    public function unsetUser()
+    {
         $this->_session->shibalikeUser = null;
         return true;
     }
 
-    public function setReturnUrl($url) {
+    public function setReturnUrl($url)
+    {
         $this->_session->returnUrl = $url;
     }
 
-    public function getReturnUrl() {
+    public function getReturnUrl()
+    {
         return $this->_session->returnUrl;
     }
 
-    public function forget() {
+    public function forget()
+    {
         $this->_session->unsetAll();
     }
-    
-    public function writeClose() {
+
+    public function writeClose()
+    {
         \Zend_Session::writeClose();
     }
 }

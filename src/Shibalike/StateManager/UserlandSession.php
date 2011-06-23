@@ -22,38 +22,45 @@ class UserlandSession implements IStateManager {
         $this->_session->start();
     }
 
-    public function setUser(User $user) {
+    public function setUser(User $user)
+    {
         $this->_session->data['shibalikeUser'] = $user;
     }
 
-    public function getUser() {
-        if (isset ($this->_session->data['shibalikeUser'])) {
+    public function getUser()
+    {
+        if (isset($this->_session->data['shibalikeUser'])) {
             return $this->_session->data['shibalikeUser'];
         }
         return null;
     }
 
-    public function unsetUser() {
+    public function unsetUser()
+    {
         unset($this->_session->data['shibalikeUser']);
         return true;
     }
 
-    public function setReturnUrl($url) {
+    public function setReturnUrl($url)
+    {
         $this->_session->data['returnUrl'] = $url;
     }
 
-    public function getReturnUrl() {
-        if (isset ($this->_session->data['returnUrl'])) {
+    public function getReturnUrl()
+    {
+        if (isset($this->_session->data['returnUrl'])) {
             return $this->_session->data['returnUrl'];
         }
         return null;
     }
 
-    public function forget() {
+    public function forget()
+    {
         $this->_session->destroy(true);
     }
-    
-    public function writeClose() {
+
+    public function writeClose()
+    {
         $this->_session->write_close();
     }
 }

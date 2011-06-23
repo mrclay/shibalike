@@ -4,10 +4,7 @@
 require '_inc.php';
 
 $sp = new Shibalike\SP(getStateManager(), getUrlConfig());
-$_SERVER = $sp->mergeAttrs($_SERVER);
-if (! $sp->userIsAuthenticated()) {
-    $sp->redirect();
-}
+$sp->requireValidUser();
 
 if (empty($_SERVER['REMOTE_USER'])) {
     die('Something went wrong. You should never see this.');

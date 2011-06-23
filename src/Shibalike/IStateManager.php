@@ -2,7 +2,12 @@
 
 namespace Shibalike;
 
+/**
+ * The state manager is responsible for tying a User object and some other state
+ * to a user, usually via a session.
+ */
 interface IStateManager {
+
     /**
      * @return bool was the user set successfully?
      * @param User $user
@@ -33,7 +38,7 @@ interface IStateManager {
      * Forget all state data
      */
     public function forget();
-    
+
     /**
      * Persist any session data to disk (e.g. called before a redirect)
      */

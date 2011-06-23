@@ -2,12 +2,29 @@
 
 namespace Shibalike;
 
+/**
+ * A value object used to store attributes & username. Created by the IdP, stored in the
+ * state manager.
+ */
 class User {
+
+    /**
+     * @var string
+     */
     protected $_username;
+    
+    /**
+     * @var array
+     */
     protected $_attrs;
 
-    public function __construct($username, array $attrs) {
-        if (! is_string($username) || $username === '') {
+    /**
+     * @param string $username
+     * @param array $attrs 
+     */
+    public function __construct($username, array $attrs)
+    {
+        if (!is_string($username) || $username === '') {
             throw new \Exception("username must be a string.");
         }
         if (empty($attrs)) {
@@ -20,14 +37,16 @@ class User {
     /**
      * @return string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->_username;
     }
 
     /**
      * @return array
      */
-    public function getAttrs() {
+    public function getAttrs()
+    {
         return $this->_attrs;
     }
 }

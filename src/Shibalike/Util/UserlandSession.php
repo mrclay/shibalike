@@ -3,9 +3,7 @@
 namespace Shibalike\Util;
 
 use Shibalike\Util\UserlandSession\IStorage;
-
 use Shibalike\Util\IdGenerator;
-
 use Shibalike\Util\UserlandSession\Storage\Files;
 
 /**
@@ -28,7 +26,6 @@ use Shibalike\Util\UserlandSession\Storage\Files;
  * Also a tiny session fixation vulnerability has been prevented in start().
  */
 class UserlandSession {
-    
     const CACHE_LIMITER_NONE = '';
     const CACHE_LIMITER_PUBLIC = 'public';
     const CACHE_LIMITER_PRIVATE_NO_EXPIRE = 'private_no_expire';
@@ -53,7 +50,7 @@ class UserlandSession {
      * @var type array
      */
     public $data = null;
-    
+
     /**
      * @return Shibalike\Util\UserlandSession\IStorage
      */
@@ -61,7 +58,6 @@ class UserlandSession {
     {
         return $this->_storage;
     }
-
 
     /**
      * Users should consider using factory() to prevent cookie/storage name collisions.
@@ -72,11 +68,11 @@ class UserlandSession {
     {
         $this->_storage = $storage;
         $this->_name = $storage->getName();
-        if (! preg_match('/^[a-zA-Z0-9_]+$/', $this->_name)) {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->_name)) {
             throw new \Exception('UserlandSession\\Storage name may contain only a-zA-Z_');
         }
     }
-    
+
     /**
      * More safely create a session. This function will only let you create sessions with 
      * names that are unique (case-insentively) to avoid creating cookie/storage 
@@ -89,7 +85,7 @@ class UserlandSession {
     {
         static $activeNames = array();
         static $i = 1;
-        
+
         if (null === $storage) {
             $storage = new Files("SHIBALIKE$i");
             $i++;
@@ -112,12 +108,12 @@ class UserlandSession {
      */
     public function id($id = null)
     {
-        if (! $this->_id && is_string($id) && $this->_storage->idIsValid($id)) {
+        if (!$this->_id && is_string($id) && $this->_storage->idIsValid($id)) {
             $this->_requestedId = $id;
         }
         return $this->_id;
     }
-    
+
     /**
      * Get a session ID from the client that's been validated by the storage handler.
      * 
@@ -125,7 +121,7 @@ class UserlandSession {
      */
     public function get_id_from_cookie()
     {
-        if (! empty($_COOKIE[$this->_name])) {
+        if (!empty($_COOKIE[$this->_name])) {
             $id = $_COOKIE[$this->_name];
             if (is_string($id) && $this->_storage->idIsValid($id)) {
                 return $id;
@@ -133,7 +129,7 @@ class UserlandSession {
         }
         return false;
     }
-    
+
     /**
      * Does the storage handler have data under this ID?
      * 
@@ -142,16 +138,16 @@ class UserlandSession {
      */
     public function persisted_data_exists($id)
     {
-        if (! $this->_id) {
+        if (!$this->_id) {
             $this->_storage->open();
         }
         $ret = (bool) $this->_storage->read($id);
-        if (! $this->_id) {
+        if (!$this->_id) {
             $this->_storage->close();
         }
         return $ret;
     }
-    
+
     /**
      * Is the client's ID valid and pointing to existing session data? You might want to
      * call this if you don't want to start sessions for every visitor.
@@ -163,7 +159,7 @@ class UserlandSession {
         $id = $this->get_id_from_cookie();
         return $id && $this->persisted_data_exists($id);
     }
-    
+
     /**
      * Start the session.
      * 
@@ -181,9 +177,7 @@ class UserlandSession {
             $this->_requestedId = null;
         } else {
             $id = $this->get_id_from_cookie();
-            $this->_id = $id
-                ? $id
-                : IdGenerator::generateBase32Id($this->id_length);
+            $this->_id = $id ? $id : IdGenerator::generateBase32Id($this->id_length);
         }
         // should we call GC?
         $rand = mt_rand(1, $this->gc_divisor);
@@ -192,9 +186,9 @@ class UserlandSession {
         }
         // open storage
         $this->_storage->open();
-        
+
         // try data fetch
-        if (! $this->_load_data()) {
+        if (!$this->_load_data()) {
             // unlike the native PHP session, we don't let users choose their own
             // session IDs if there's no data. This prevents session fixation through 
             // cookies (very hard for an attacker, but why leave this door open?).
@@ -202,10 +196,9 @@ class UserlandSession {
             $this->_set_cookie($this->_name, $this->_id);
         }
         // send optional cache limiter
-        
         // this is actual session behavior rather than what's documented.
         $lastModified = self::gmt_format(filemtime($_SERVER['SCRIPT_FILENAME']));
-        
+
         $ce = $this->cache_expire;
         switch ($this->cache_limiter) {
             case self::CACHE_LIMITER_PUBLIC:
@@ -233,7 +226,7 @@ class UserlandSession {
         }
         return true;
     }
-    
+
     /**
      * Write data and close the session. (This is called automatically by the destructor,
      * but for the sake of proper serialization, you should call it explicitly)
@@ -242,15 +235,16 @@ class UserlandSession {
      */
     public function write_close()
     {
-        if (! $this->_id || ! $this->_save_data()) {
+        if (!$this->_id || !$this->_save_data()) {
             return false;
         }
         $this->_storage->close();
         $this->_id = '';
         return true;
     }
-    
-    public function __destruct() {
+
+    public function __destruct()
+    {
         if ($this->_id) {
             $this->write_close();
         }
@@ -275,7 +269,7 @@ class UserlandSession {
         }
         return false;
     }
-    
+
     /**
      * Regenerate the session ID, update the browser's cookie, and optionally remove the
      * previous ID's session storage.
@@ -285,7 +279,7 @@ class UserlandSession {
      */
     public function regenerate_id($delete_old_session = false)
     {
-        if (headers_sent() || ! $this->_id) {
+        if (headers_sent() || !$this->_id) {
             return false;
         }
         $this->remove_cookie();
@@ -297,7 +291,7 @@ class UserlandSession {
         }
         return true;
     }
-    
+
     /**
      * Remove the session cookie
      * 
@@ -307,7 +301,7 @@ class UserlandSession {
     {
         return setcookie($this->_name, '', time() - 86400, $this->cookie_path, $this->cookie_domain, (bool) $this->cookie_secure, (bool) $this->cookie_httponly);
     }
-    
+
     /**
      * Get a GMT formatted date for use in HTTP headers
      * 
@@ -318,7 +312,7 @@ class UserlandSession {
     {
         return gmdate('D, d M Y H:i:s \G\M\T', $time);
     }
-    
+
     /**
      * @return bool
      */
@@ -334,7 +328,7 @@ class UserlandSession {
         $this->data = array();
         return false;
     }
-    
+
     /**
      * @return bool
      */
@@ -349,17 +343,15 @@ class UserlandSession {
      */
     protected function _set_cookie($name, $id)
     {
-        $expire = $this->cookie_lifetime
-            ? time() + (int) $this->cookie_lifetime
-            : 0;
+        $expire = $this->cookie_lifetime ? time() + (int) $this->cookie_lifetime : 0;
         return setcookie($name, $id, $expire, $this->cookie_path, $this->cookie_domain, (bool) $this->cookie_secure, (bool) $this->cookie_httponly);
     }
-    
+
     /**
      * @var Util_UserlandSession_IStorage
      */
     protected $_storage;
-
+    
     /**
      * Active session ID, or empty if inactive
      * 
