@@ -32,7 +32,11 @@ class StateManager_ZendSession implements IStateManager {
 
     public function setReturnUrl($url)
     {
-        $this->_session->returnUrl = $url;
+        if (empty($url)) {
+            unset($this->_session->returnUrl);
+        } else {
+            $this->_session->returnUrl = $url;
+        }
     }
 
     public function getReturnUrl()

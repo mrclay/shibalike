@@ -18,6 +18,7 @@ function getAttrStore() {
         'eduperson_affiliations', 
         'eppn', 
         'givenName', 
+        'displayname',
         'glid', 
         'loa', 
         'mail', 
@@ -28,7 +29,9 @@ function getAttrStore() {
         'uf_affiliations',
         'primary-affiliation') as $key) 
     {
-        $source[$_SERVER['glid']][$key] = $_SERVER[$key];
+        if (isset($_SERVER[$key])) {
+            $source[$_SERVER['glid']][$key] = $_SERVER[$key];
+        }
     }
     return new Shibalike\Attr\Store\ArrayStore($source);
 }

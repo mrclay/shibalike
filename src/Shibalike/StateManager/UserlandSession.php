@@ -43,7 +43,11 @@ class UserlandSession implements IStateManager {
 
     public function setReturnUrl($url)
     {
-        $this->_session->data['returnUrl'] = $url;
+        if (empty($url)) {
+            unset($this->_session->data['returnUrl']);
+        } else {
+            $this->_session->data['returnUrl'] = $url;
+        }
     }
 
     public function getReturnUrl()
