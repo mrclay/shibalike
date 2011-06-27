@@ -1,6 +1,6 @@
 <?php
 
-require '../autoload.php';
+require dirname(__DIR__) . '/autoload.php';
 
 function getStateManager() {
     $storage = new Shibalike\Util\UserlandSession\Storage\Files('SHIBALIKE_BASIC');

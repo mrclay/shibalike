@@ -1,0 +1,5 @@
+# uncomment these on Apache w/ mod_shib properly setup
+
+#AuthType shibboleth
+#ShibRequireSession On
+#Require valid-user
