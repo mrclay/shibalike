@@ -179,13 +179,15 @@ class UserlandSession {
             $id = $this->get_id_from_cookie();
             $this->_id = $id ? $id : IdGenerator::generateBase32Id($this->id_length);
         }
+        
+        // open storage (reqd for GC)
+        $this->_storage->open();
+
         // should we call GC?
         $rand = mt_rand(1, $this->gc_divisor);
         if ($rand <= $this->gc_probability) {
             $this->_storage->gc($this->gc_maxlifetime);
         }
-        // open storage
-        $this->_storage->open();
 
         // try data fetch
         if (!$this->_load_data()) {
