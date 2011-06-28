@@ -23,7 +23,7 @@ $_SERVER = array_merge($_SERVER, array (
 // the "IdP"
 require dirname(__DIR__) . '/_inc.php';
 
-$idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getUrlConfig());
+$idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getConfig());
 
 if (isset($_GET['logout'])) {
     $idp->logout();

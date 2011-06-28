@@ -30,20 +30,6 @@ class StateManager_ZendSession implements IStateManager {
         return true;
     }
 
-    public function setReturnUrl($url)
-    {
-        if (empty($url)) {
-            unset($this->_session->returnUrl);
-        } else {
-            $this->_session->returnUrl = $url;
-        }
-    }
-
-    public function getReturnUrl()
-    {
-        return $this->_session->returnUrl;
-    }
-
     public function forget()
     {
         $this->_session->unsetAll();
@@ -52,5 +38,24 @@ class StateManager_ZendSession implements IStateManager {
     public function writeClose()
     {
         \Zend_Session::writeClose();
+    }
+    
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    public function getMetadata($key)
+    {
+        return $this->_session->{'shibalikeMeta_' . $key};
+    }
+    
+    /**
+     * @param string $key
+     * @param string $value if null, this key will be removed
+     * @return bool
+     */
+    public function setMetadata($key, $value = null)
+    {
+        return $this->_session->{'shibalikeMeta_' . $key} = $value;
     }
 }

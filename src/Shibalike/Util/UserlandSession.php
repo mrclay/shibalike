@@ -190,7 +190,7 @@ class UserlandSession {
         }
 
         // try data fetch
-        if (!$this->_load_data()) {
+        if (! $this->_load_data()) {
             // unlike the native PHP session, we don't let users choose their own
             // session IDs if there's no data. This prevents session fixation through 
             // cookies (very hard for an attacker, but why leave this door open?).

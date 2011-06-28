@@ -2,7 +2,7 @@
 
 namespace Shibalike;
 
-class UrlConfig {
+class Config {
 
     /**
      * URL where IdP is used
@@ -21,4 +21,10 @@ class UrlConfig {
      * @var string
      */
     public $postLogoutUrl = "";
+    
+    /**
+     * Seconds after authTime when the User will no longer be considered authenticated.
+     * @var int
+     */
+    public $timeout = 28800;
 }

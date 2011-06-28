@@ -2,7 +2,7 @@
 
 // the "SP"
 require '_inc.php';
-$sp = new Shibalike\SP(getStateManager(), getUrlConfig());
+$sp = new Shibalike\SP(getStateManager(), getConfig());
 $sp->requireValidUser();
 
 

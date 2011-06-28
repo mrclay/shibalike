@@ -41,23 +41,6 @@ class UserlandSession implements IStateManager {
         return true;
     }
 
-    public function setReturnUrl($url)
-    {
-        if (empty($url)) {
-            unset($this->_session->data['returnUrl']);
-        } else {
-            $this->_session->data['returnUrl'] = $url;
-        }
-    }
-
-    public function getReturnUrl()
-    {
-        if (isset($this->_session->data['returnUrl'])) {
-            return $this->_session->data['returnUrl'];
-        }
-        return null;
-    }
-
     public function forget()
     {
         $this->_session->destroy(true);
@@ -66,5 +49,33 @@ class UserlandSession implements IStateManager {
     public function writeClose()
     {
         $this->_session->write_close();
+    }
+    
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    public function getMetadata($key)
+    {
+        $key = 'shibalikeMeta_' . $key;
+        return isset($this->_session->data[$key])
+            ? $this->_session->data[$key]
+            : null;
+    }
+    
+    /**
+     * @param string $key
+     * @param string $value if null, this key will be removed
+     * @return bool
+     */
+    public function setMetadata($key, $value = null)
+    {
+        $key = 'shibalikeMeta_' . $key;
+        if ($value === null) {
+            unset($this->_session->data[$key]);
+        } else {
+            $this->_session->data[$key] = $value;
+        }
+        return true;
     }
 }

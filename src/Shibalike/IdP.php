@@ -33,13 +33,13 @@ class IdP {
     /**
      * @param \Shibalike\IStateManager $stateMgr
      * @param \Shibalike\IStore $store
-     * @param \Shibalike\UrlConfig $urls
+     * @param \Shibalike\Config $config
      */
-    public function __construct(IStateManager $stateMgr, IStore $store, UrlConfig $urls)
+    public function __construct(IStateManager $stateMgr, IStore $store, Config $config)
     {
         $this->_stateMgr = $stateMgr;
         $this->_store = $store;
-        $this->_urls = $urls;
+        $this->_config = $config;
     }
 
     /**
@@ -49,7 +49,10 @@ class IdP {
      */
     public function getUser()
     {
-        return $this->_stateMgr->getUser();
+        $authTime = $this->_stateMgr->getMetadata('authTime');
+        if (($authTime + $this->_config->timeout) < time()) {
+            return $this->_stateMgr->getUser();
+        }
     }
 
     /**
@@ -67,7 +70,7 @@ class IdP {
      * Mark the user as authenticated and store her in the state manager
      * 
      * @param string $username
-     * @param array $attrs 
+     * @param array $attrs if not provided, fetchAttrs will be called
      * @return bool was the user state set successfully?
      */
     public function markAsAuthenticated($username, array $attrs = null)
@@ -76,7 +79,8 @@ class IdP {
             $attrs = $this->fetchAttrs($username);
         }
         $user = new User($username, $attrs);
-        return $this->_stateMgr->setUser($user);
+        return ($this->_stateMgr->setUser($user)
+                && $this->_stateMgr->setMetadata('authTime', time()));
     }
 
     /**
@@ -86,10 +90,10 @@ class IdP {
      */
     public function getRedirectUrl()
     {
-        $url = $this->_stateMgr->getReturnUrl();
-        $this->_stateMgr->setReturnUrl("");
+        $url = $this->_stateMgr->getMetadata('returnUrl');
+        $this->_stateMgr->setMetadata('returnUrl');
         if (empty($url)) {
-            $url = $this->_urls->spUrl;
+            $url = $this->_config->spUrl;
         }
         return $url;
     }
@@ -104,7 +108,7 @@ class IdP {
     {
         $this->_stateMgr->forget();
         if ($redirect) {
-            $this->redirect($this->_urls->postLogoutUrl, $exitAfterRedirect);
+            $this->redirect($this->_config->postLogoutUrl, $exitAfterRedirect);
         }
     }
 
@@ -138,7 +142,7 @@ class IdP {
     protected $_stateMgr;
     
     /**
-     * @var \Shibalike\UrlConfig
+     * @var \Shibalike\Config
      */
-    protected $_urls;
+    protected $_config;
 }

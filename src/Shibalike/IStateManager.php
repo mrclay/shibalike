@@ -25,16 +25,6 @@ interface IStateManager {
     public function unsetUser();
 
     /**
-     * @param string $url
-     */
-    public function setReturnUrl($url);
-
-    /**
-     * @return string
-     */
-    public function getReturnUrl();
-
-    /**
      * Forget all state data
      */
     public function forget();
@@ -43,4 +33,17 @@ interface IStateManager {
      * Persist any session data to disk (e.g. called before a redirect)
      */
     public function writeClose();
+    
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    public function getMetadata($key);
+    
+    /**
+     * @param string $key
+     * @param string $value if null, this key will be removed
+     * @return bool
+     */
+    public function setMetadata($key, $value = null);
 }

@@ -17,12 +17,12 @@ class SP {
 
     /**
      * @param \Shibalike\IStateManager $stateMgr
-     * @param \Shibalike\UrlConfig $urls 
+     * @param \Shibalike\Config $config 
      */
-    public function __construct(IStateManager $stateMgr, UrlConfig $urls)
+    public function __construct(IStateManager $stateMgr, Config $config)
     {
         $this->_stateMgr = $stateMgr;
-        $this->_urls = $urls;
+        $this->_config = $config;
     }
     
     /**
@@ -70,7 +70,7 @@ class SP {
      */
     public function userIsAuthenticated()
     {
-        return (bool) $this->_stateMgr->getUser();
+        return (bool) $this->getUser();
     }
 
     /**
@@ -80,7 +80,10 @@ class SP {
      */
     public function getUser()
     {
-        return $this->_stateMgr->getUser();
+        $authTime = $this->_stateMgr->getMetadata('authTime');
+        if (($authTime + $this->_config->timeout) < time()) {
+            return $this->_stateMgr->getUser();
+        }
     }
 
     /**
@@ -94,7 +97,7 @@ class SP {
         if (session_id()) {
             session_write_close();
         }
-        header('Location: ' . $this->_urls->idpUrl);
+        header('Location: ' . $this->_config->idpUrl);
         if ($exitAfter) {
             exit();
         }
@@ -108,7 +111,7 @@ class SP {
         if (! $url) {
             $url = $this->_getCurrentUrl();
         }
-        $this->_stateMgr->setReturnUrl($url);
+        $this->_stateMgr->setMetadata('returnUrl', $url);
     }
     
     /**
@@ -132,7 +135,7 @@ class SP {
     protected $_stateMgr;
     
     /**
-     * @var UrlConfig
+     * @var Config
      */
-    protected $_urls;
+    protected $_config;
 }

@@ -3,7 +3,7 @@
 // the "IdP"
 require '_inc.php';
 
-$idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getUrlConfig());
+$idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getConfig());
 
 if (isset($_GET['logout'])) {
     $idp->logout();

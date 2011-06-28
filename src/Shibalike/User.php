@@ -17,7 +17,7 @@ class User {
      * @var array
      */
     protected $_attrs;
-
+    
     /**
      * @param string $username
      * @param array $attrs 
