@@ -2,7 +2,10 @@
 
 namespace Shibalike;
 
+use Shibalike\IStateManager;
+use Shibalike\Config;
 use Shibalike\Attr\IStore;
+use Shibalike\Junction;
 
 /**
  * Component for marking user as authenticated. For use in a "login" script.
@@ -28,7 +31,7 @@ use Shibalike\Attr\IStore;
  * }
  * </code>
  */
-class IdP {
+class IdP extends Junction {
 
     /**
      * @param \Shibalike\IStateManager $stateMgr
@@ -37,22 +40,8 @@ class IdP {
      */
     public function __construct(IStateManager $stateMgr, IStore $store, Config $config)
     {
-        $this->_stateMgr = $stateMgr;
         $this->_store = $store;
-        $this->_config = $config;
-    }
-
-    /**
-     * Get the User object from the state manager (e.g. check if already logged in)
-     *
-     * @return \Shibalike\User|null
-     */
-    public function getUser()
-    {
-        $authTime = $this->_stateMgr->getMetadata('authTime');
-        if (($authTime + $this->_config->timeout) < time()) {
-            return $this->_stateMgr->getUser();
-        }
+        parent::__construct($stateMgr, $config);
     }
 
     /**
@@ -84,18 +73,30 @@ class IdP {
     }
 
     /**
-     * Get the best known URL of the shibboleth auth script
+     * Get the default URL to redirect to
      *
      * @return string
      */
     public function getRedirectUrl()
     {
-        $url = $this->_stateMgr->getMetadata('returnUrl');
-        $this->_stateMgr->setMetadata('returnUrl');
+        return $this->_config->spUrl;
+    }
+    
+    /**
+     * Close an open state manager/session and redirect the user
+     *
+     * @param string $url
+     * @param bool $exitAfter exit after redirecting?
+     */
+    public function redirect($url = null, $exitAfter = true)
+    {
         if (empty($url)) {
-            $url = $this->_config->spUrl;
+            $url = $this->_stateMgr->getMetadata('returnUrl');
+            if (! empty($url)) {
+                $this->_stateMgr->setMetadata('returnUrl');
+            }
         }
-        return $url;
+        parent::redirect($url, $exitAfter);
     }
 
     /**
@@ -111,38 +112,9 @@ class IdP {
             $this->redirect($this->_config->postLogoutUrl, $exitAfterRedirect);
         }
     }
-
-    /**
-     * Redirect the user to your shibboleth auth script
-     *
-     * @param bool $exitAfter exit after redirecting?
-     */
-    public function redirect($url = null, $exitAfter = true)
-    {
-        if (empty($url)) {
-            $url = $this->getRedirectUrl();
-        }
-        if (session_id()) {
-            session_write_close();
-        }
-        header("Location: $url");
-        if ($exitAfter) {
-            exit();
-        }
-    }
     
     /**
      * @var \Shibalike\Attr\IStore
      */
     protected $_store;
-    
-    /**
-     * @var \Shibalike\IStateManager
-     */
-    protected $_stateMgr;
-    
-    /**
-     * @var \Shibalike\Config
-     */
-    protected $_config;
 }

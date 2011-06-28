@@ -27,4 +27,9 @@ class Config {
      * @var int
      */
     public $timeout = 28800;
+    
+    /**
+     * @var string no logging if empty
+     */
+    public $logFile = "";
 }
