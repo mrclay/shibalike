@@ -6,13 +6,11 @@ environment, and has components to query attributes for a user, persist them in 
 This allows you to use your own authentication system (based on any mechanism) and
 attribute provider to sign users into any app with an existing Shibboleth auth module.
 
-## Design
+### Design
 
-The design was based on [this blog post](http://www.mrclay.org/2011/04/16/shibalike-a-php-emulation-of-a-shibboleth-environment/), which laid out the initial concept.
+The design was based on [this blog post](http://www.mrclay.org/2011/04/16/shibalike-a-php-emulation-of-a-shibboleth-environment/), which laid out the initial concept. Unlike Shibboleth, Shibalike's SP ("Service Provider") and IdP ("Identity Provider") junction points must share a common backend storage (filesystem, DB, etc), and have access to each others' browser cookies. This limits the system's abilities to cross app boundaries, but also limits its complexity of implementation and setup.
 
-Unlike Shibboleth, Shibalike's SP ("Service Provider") and IdP ("Identity Provider") junction points must share a common backend storage (filesystem, DB, etc), and have access to each others' browser cookies. This limits complexity of implementation, but also ability.
-
-## Why?
+## Why Shibalike?
 
 If you maintain a PHP app that relies on an institutional Shibboleth IdP:
 
