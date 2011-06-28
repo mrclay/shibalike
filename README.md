@@ -35,6 +35,10 @@ Shibalike presents those attributes to the application. E.g. once
 an "admin" user authenticates via Shibboleth, Shibalike could give him/her the option
 of signing into the app under a different user, or with altered attributes.
 
+### Why not SimpleSAMLphp?
+
+You might want to checkout [SimpleSAMLphp](http://simplesamlphp.org/), an impressive native PHP implementation of [SAML](http://en.wikipedia.org/wiki/Security_Assertion_Markup_Language) with some direct Shibboleth compatibility. It probably does 100 times as much as Shibalike, but also is heavier and significantly more complex. Shibalike's message passing is via shared backend storage; no XML/encryption/certs required.
+
 ## Core Components
 
 * [User](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/User.php): a simple value object with a username and array of attributes
