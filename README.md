@@ -41,15 +41,16 @@ You might want to checkout [SimpleSAMLphp](http://simplesamlphp.org/), an impres
 
 ## Core Components
 
-* [User](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/User.php): a simple value object with a username and array of attributes
-* [IStateManager](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/IStateManager.php) (interface): stores a User associated with the current browser
-* [Attr\IStore](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/Attr/IStore.php) (interface): provides attributes by username (e.g. from a DB)
 * [IdP](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/IdP.php): allows marking a user as authenticated, or logging out the current user
 * [SP](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/SP.php): allows injection of User attributes into `$_SERVER`, and optional redirecting of user to your "login" app (using an IdP)
+* [AuthRequest](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/AuthRequest.php): value object set by the SP expressing desire to authenticate
+* [AuthResult](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/AuthResult.php): value object set by IdP with a valid user's username & attributes
+* [IStateManager](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/IStateManager.php) (interface): stores Auth* objects associated with the current browser
+* [Attr\IStore](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/Attr/IStore.php) (interface): provides attributes by username (e.g. from a DB)
 
 ### UserlandSession
 
-By default, Shibalike persists attributes in a 
+By default, Shibalike persists auth/user data in a 
 [non-native session component](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/Util/UserlandSession.php),
 which operates very similarly to native sessions, but which can be used independently of 
 them. This allows Shibalike to maintain its state across applications without any 
