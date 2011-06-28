@@ -67,9 +67,8 @@ class IdP extends Junction {
         if (!$attrs) {
             $attrs = $this->fetchAttrs($username);
         }
-        $user = new User($username, $attrs);
-        return ($this->_stateMgr->setUser($user)
-                && $this->_stateMgr->setMetadata('authTime', time()));
+        $authResult = new AuthResult($username, $attrs);
+        return $this->_stateMgr->set('authResult', $authResult);
     }
 
     /**
@@ -91,9 +90,10 @@ class IdP extends Junction {
     public function redirect($url = null, $exitAfter = true)
     {
         if (empty($url)) {
-            $url = $this->_stateMgr->getMetadata('returnUrl');
-            if (! empty($url)) {
-                $this->_stateMgr->setMetadata('returnUrl');
+            $authRequest = $this->_stateMgr->get('authRequest');
+            if ($authRequest) {
+                $url = $authRequest->getReturnUrl();
+                $this->_stateMgr->set('authRequest');
             }
         }
         parent::redirect($url, $exitAfter);

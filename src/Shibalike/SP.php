@@ -24,6 +24,7 @@ class SP extends Junction {
     {
         $_SERVER = $this->mergeAttrs($_SERVER);
         if (! $this->userIsAuthenticated()) {
+            $this->makeAuthRequest();
             $this->redirect();
         }
     }
@@ -33,7 +34,9 @@ class SP extends Junction {
      */
     public function initLazySession()
     {
-        $_SERVER = $this->mergeAttrs($_SERVER);
+        if ($this->_stateMgr->likelyHasState()) {
+            $_SERVER = $this->mergeAttrs($_SERVER);
+        }
     }
     
     /**
@@ -48,12 +51,26 @@ class SP extends Junction {
      */
     public function mergeAttrs($server)
     {
-        $user = $this->getUser();
-        if ($user) {
-            $server = array_merge($server, $user->getAttrs());
-            $server['REMOTE_USER'] = $user->getUsername();
+        $authResult = $this->getValidAuthResult();
+        if ($authResult) {
+            $server = array_merge($server, $authResult->getAttrs());
+            $server['REMOTE_USER'] = $authResult->getUsername();
         }
         return $server;
+    }
+    
+    /**
+     * Instruct IdP that this user wishes to be authenticated
+     * 
+     * @param string $returnUrl if null, getReturnUrl() is used
+     */
+    public function makeAuthRequest($returnUrl = null)
+    {
+        if (empty($returnUrl)) {
+            $returnUrl = $this->getReturnUrl();
+        }
+        $this->_stateMgr->set('authRequest', new AuthRequest($returnUrl));
+        $this->_stateMgr->set('authResult');
     }
     
     /**
@@ -67,13 +84,22 @@ class SP extends Junction {
     }
     
     /**
-     * @param string $url if empty, the current URL will be used
+     * @param string $url
      */
-    public function setReturnUrl($url = null)
+    public function setReturnUrl($url)
     {
-        if (! $url) {
-            $url = $this->getCurrentUrl();
-        }
-        $this->_stateMgr->setMetadata('returnUrl', $url);
+        $this->_returnUrl = $url;
     }
+    
+    public function getReturnUrl()
+    {
+        return empty($this->_returnUrl)
+            ? Junction::getCurrentUrl()
+            : $this->_returnUrl;
+    }
+    
+    /**
+     * @var string
+     */
+    protected $_returnUrl;
 }

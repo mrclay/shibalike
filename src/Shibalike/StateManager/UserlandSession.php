@@ -19,30 +19,13 @@ class UserlandSession implements IStateManager {
     public function __construct(Sess $session)
     {
         $this->_session = $session;
-        $this->_session->start();
-    }
-
-    public function setUser(User $user)
-    {
-        $this->_session->data['shibalikeUser'] = $user;
-    }
-
-    public function getUser()
-    {
-        if (isset($this->_session->data['shibalikeUser'])) {
-            return $this->_session->data['shibalikeUser'];
-        }
-        return null;
-    }
-
-    public function unsetUser()
-    {
-        unset($this->_session->data['shibalikeUser']);
-        return true;
     }
 
     public function forget()
     {
+        if (! $this->_session->id()) {
+            $this->_session->start();
+        }
         $this->_session->destroy(true);
     }
 
@@ -55,9 +38,16 @@ class UserlandSession implements IStateManager {
      * @param string $key
      * @return string|null
      */
-    public function getMetadata($key)
+    public function get($key)
     {
-        $key = 'shibalikeMeta_' . $key;
+        if (! $this->_session->id()) {
+            if ($this->_session->session_likely_exists()) {
+                $this->_session->start();
+            } else {
+                return null;
+            }
+        }
+        $key = 'shibalike_' . $key;
         return isset($this->_session->data[$key])
             ? $this->_session->data[$key]
             : null;
@@ -68,14 +58,22 @@ class UserlandSession implements IStateManager {
      * @param string $value if null, this key will be removed
      * @return bool
      */
-    public function setMetadata($key, $value = null)
+    public function set($key, $value = null)
     {
-        $key = 'shibalikeMeta_' . $key;
+        if (! $this->_session->id()) {
+            $this->_session->start();
+        }
+        $key = 'shibalike_' . $key;
         if ($value === null) {
             unset($this->_session->data[$key]);
         } else {
             $this->_session->data[$key] = $value;
         }
         return true;
+    }
+    
+    public function likelyHasState()
+    {
+        return $this->_session->session_likely_exists();
     }
 }

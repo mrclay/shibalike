@@ -2,8 +2,8 @@
 
 namespace Shibalike;
 
-use Shibalike\IStateManager as IStateManager;
-use Shibalike\Config as Config;
+use Shibalike\IStateManager;
+use Shibalike\Config;
 
 /**
  * 
@@ -29,20 +29,21 @@ class Junction {
      */
     public function userIsAuthenticated()
     {
-        return (bool) $this->getUser();
+        return (bool) $this->getValidAuthResult();
     }
 
     /**
      * Get the User object from the state manager
      *
-     * @return \Shibalike\User|null
+     * @return \Shibalike\AuthResult|null
      */
-    public function getUser()
+    public function getValidAuthResult()
     {
-        $authTime = $this->_stateMgr->getMetadata('authTime');
-        if (($authTime + $this->_config->timeout) < time()) {
-            return $this->_stateMgr->getUser();
+        $authResult = $this->_stateMgr->get('authResult');
+        if ($authResult && $authResult->isFresh($this->_config->timeout)) {
+            return $authResult;
         }
+        return null;
     }
 
     /**
@@ -79,7 +80,7 @@ class Junction {
     /**
      * @return string
      */
-    public function getCurrentUrl()
+    public static function getCurrentUrl()
     {
         $host  = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
         $proto = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=="off") ? 'https' : 'http';

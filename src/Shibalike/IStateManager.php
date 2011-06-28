@@ -9,22 +9,6 @@ namespace Shibalike;
 interface IStateManager {
 
     /**
-     * @return bool was the user set successfully?
-     * @param User $user
-     */
-    public function setUser(User $user);
-
-    /**
-     * @return User|null
-     */
-    public function getUser();
-
-    /**
-     * @return bool was the user unset successfully?
-     */
-    public function unsetUser();
-
-    /**
      * Forget all state data
      */
     public function forget();
@@ -38,12 +22,18 @@ interface IStateManager {
      * @param string $key
      * @return string|null
      */
-    public function getMetadata($key);
+    public function get($key);
     
     /**
      * @param string $key
      * @param string $value if null, this key will be removed
      * @return bool
      */
-    public function setMetadata($key, $value = null);
+    public function set($key, $value = null);
+    
+    /**
+     * Returns true if user is likely to have state data (e.g. the session cookie)
+     * @return bool
+     */
+    public function likelyHasState();
 }

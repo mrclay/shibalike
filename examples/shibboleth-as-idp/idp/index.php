@@ -29,9 +29,9 @@ if (isset($_GET['logout'])) {
     $idp->logout();
 }
 
-if ($idp->getUser()) {
+if ($idp->getValidAuthResult()) {
     header('Content-Type: text/html;charset=utf-8');
-    echo "Already signed in as <b>" . htmlspecialchars($idp->getUser()->getUsername(), ENT_QUOTES, 'UTF-8') . '</b>. <a href="?logout">Sign out</a>';
+    echo "Already signed in as <b>" . htmlspecialchars($idp->getValidAuthResult()->getUsername(), ENT_QUOTES, 'UTF-8') . '</b>. <a href="?logout">Sign out</a>';
     die();
 }
 

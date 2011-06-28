@@ -14,22 +14,6 @@ class StateManager_ZendSession implements IStateManager {
         $this->_session = $session;
     }
 
-    public function setUser(User $user)
-    {
-        $this->_session->shibalikeUser = $user;
-    }
-
-    public function getUser()
-    {
-        return $this->_session->shibalikeUser;
-    }
-
-    public function unsetUser()
-    {
-        $this->_session->shibalikeUser = null;
-        return true;
-    }
-
     public function forget()
     {
         $this->_session->unsetAll();
@@ -44,9 +28,9 @@ class StateManager_ZendSession implements IStateManager {
      * @param string $key
      * @return string|null
      */
-    public function getMetadata($key)
+    public function get($key)
     {
-        return $this->_session->{'shibalikeMeta_' . $key};
+        return $this->_session->{'shibalike_' . $key};
     }
     
     /**
@@ -54,8 +38,13 @@ class StateManager_ZendSession implements IStateManager {
      * @param string $value if null, this key will be removed
      * @return bool
      */
-    public function setMetadata($key, $value = null)
+    public function set($key, $value = null)
     {
-        return $this->_session->{'shibalikeMeta_' . $key} = $value;
+        return $this->_session->{'shibalike_' . $key} = $value;
+    }
+    
+    public function likelyHasState()
+    {
+        return \Zend_Session::sessionExists();
     }
 }
