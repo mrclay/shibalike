@@ -1,14 +1,16 @@
 # Shibalike
 
-Shibalike is a PHP library for emulating a [Shibboleth](http://en.wikipedia.org/wiki/Shibboleth_%28Internet2%29)
-environment, and has components to query attributes for a user, persist them tied to a
-browser cookie, and inject them into the `$_SERVER` array as would a web server module.
+Shibalike is a PHP library for emulating a limited [Shibboleth](http://en.wikipedia.org/wiki/Shibboleth_%28Internet2%29)
+environment, and has components to query attributes for a user, persist them in a cookie-based session, and inject them into the `$_SERVER` array as would a web server module.
 
 This allows you to use your own authentication system (based on any mechanism) and
 attribute provider to sign users into any app with an existing Shibboleth auth module.
 
-The design was based on [this blog post](http://www.mrclay.org/2011/04/16/shibalike-a-php-emulation-of-a-shibboleth-environment/), 
-which laid out the initial concept.
+## Design
+
+The design was based on [this blog post](http://www.mrclay.org/2011/04/16/shibalike-a-php-emulation-of-a-shibboleth-environment/), which laid out the initial concept.
+
+Unlike Shibboleth, Shibalike's SP ("Service Provider") and IdP ("Identity Provider") junction points must share a common backend storage (filesystem, DB, etc), and have access to each others' browser cookies. This limits complexity of implementation, but also ability.
 
 ## Why?
 
@@ -20,12 +22,12 @@ If you maintain a PHP app that relies on an institutional Shibboleth IdP:
 * You don't control the IdP's behavior:
   * You can't easily emulate downtime or flaky behavior for testing purposes.
   * You can't easily see how your app handles a switch between shibboleth users.
-  * You can't simply/quickly change arbitrary attributes for testing purposes.
+  * You can't quickly change arbitrary attributes for testing purposes.
   * In a testing environment you can't simply sign in as a different Shibboleth user.
-  * You can't hardcode a user for use in a unit/integration tests.
+  * You can't hardcode a user for use in unit/integration tests.
   * The IdP can go down!
 
-You could use Shibalike to setup a local Shibalike "IdP" to be used during testing (e.g. the "login"
+You could use Shibalike to setup a local "IdP" to be used during testing (e.g. the "login"
 might just be a dropdown of test users) or as a backup if the real IdP is down (e.g. the 
 login might use LDAP or some other method to authenticate users).
 
@@ -66,8 +68,8 @@ class based on an existing set of callbacks used in session_set_save_handler().
 * A default state manager, based on `UserLandSession`.
 * A simple attribute provider based on Zend Db and a single table.
 * A simple attribute provider based on a static array.
-* There's a [basic example](https://github.com/mrclay/shibalike/tree/master/examples/basic) demonstrating a crude but operational usage of the system.
-* There's a [demonstration of UserlandSession](https://github.com/mrclay/shibalike/blob/master/examples/UserlandSession/simultaneous.php) showing 3 simultaneous sessions, including a native one.
+* A [basic demo](https://github.com/mrclay/shibalike/tree/master/examples/basic) of a crude but operational usage.
+* A [demo of UserlandSession](https://github.com/mrclay/shibalike/blob/master/examples/UserlandSession/simultaneous.php) showing 3 simultaneous sessions, including a native one.
 
 ## License
 
@@ -86,7 +88,7 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL STEPHEN CLAY OR OTHER COLLABORATORS BE LIABLE FOR ANY
+DISCLAIMED. IN NO EVENT SHALL THE AFOREMENTIONED PARTIES BE LIABLE FOR ANY
 DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
