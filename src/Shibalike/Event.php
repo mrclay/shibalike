@@ -15,11 +15,6 @@ class Event {
         $this->_time = microtime(true);
     }
     
-    public function getType()
-    {
-        return get_class($this);
-    }
-    
     public function getTime()
     {
         return $this->_time;

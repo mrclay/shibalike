@@ -20,4 +20,4 @@ echo "<h1>Hello, " . htmlspecialchars($_SERVER['displayname'], ENT_QUOTES, 'UTF-
 
 echo "<p>This is a protected resource.</p>";
 
-echo "<p><a href='idp.php?logout'>Sign out</a></p>";
+echo "<p><a href='sp.php?logout'>Sign out</a></p>";

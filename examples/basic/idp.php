@@ -5,19 +5,6 @@ require '_inc.php';
 
 $idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getConfig());
 
-if (isset($_GET['logout'])) {
-    $idp->logout();
-}
-
-if ($idp->getValidAuthResult()) {
-    header('Content-Type: text/html;charset=utf-8');
-    echo "Already signed in as <b>" . htmlspecialchars($idp->getValidAuthResult()->getUsername(), ENT_QUOTES, 'UTF-8') . '</b>. <a href="?logout">Sign out</a>';
-    die();
-}
-
-
-
-
 // crude authentication
 if (! empty($_POST)) {
     // perform auth

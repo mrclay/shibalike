@@ -39,7 +39,5 @@ function getAttrStore() {
 function getConfig() {
     $config = new Shibalike\Config();
     $config->idpUrl = './idp/';
-    $config->postLogoutUrl = '../goodbye.php';
-    $config->spUrl = './';
     return $config;
 }

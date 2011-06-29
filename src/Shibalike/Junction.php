@@ -68,6 +68,14 @@ class Junction {
     }
     
     /**
+     * Clear the user's state
+     */
+    public function logout()
+    {
+        $this->_stateMgr->forget();
+    }
+    
+    /**
      * Get the default URL to redirect to
      *
      * @return string

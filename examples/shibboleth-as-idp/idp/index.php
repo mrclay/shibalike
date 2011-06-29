@@ -1,6 +1,6 @@
 <?php
 
-// for the demo let's pretend Shibboleth works in this directory...
+// for the demo let's pretend Shibboleth is protecting this directory...
 $_SERVER = array_merge($_SERVER, array (
   'UFADGroupsDN' => 'FakeGroup',
   'businessName' => 'User,Johnny B',
@@ -27,26 +27,13 @@ $idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getConfig());
 
 if (isset($_GET['logout'])) {
     $idp->logout();
+    $idp->redirect('../goodbye.php');
 }
 
-if ($idp->getValidAuthResult()) {
-    header('Content-Type: text/html;charset=utf-8');
-    echo "Already signed in as <b>" . htmlspecialchars($idp->getValidAuthResult()->getUsername(), ENT_QUOTES, 'UTF-8') . '</b>. <a href="?logout">Sign out</a>';
-    die();
-}
-
-if (! isset($_SERVER['glid'])) {
-    die('This directory is not protected by shibboleth.');
-}
+// since shibboleth is protecting this directory, we know at this point,
+// attributes will be present in $_SERVER.
 
 $username = $_SERVER['glid'];
 $userAttrs = $idp->fetchAttrs($username);
-if ($userAttrs) {
-    $idp->markAsAuthenticated($username);
-    $idp->redirect();
-} else {
-    // user is not in attr store!
-    header('Content-Type: text/html;charset=utf-8');
-    echo "Sorry. You're not in the attribute store. <a href='./'>Try again</a>";
-    die();
-}
+$idp->markAsAuthenticated($username);
+$idp->redirect();

@@ -70,7 +70,7 @@ class IdP extends Junction {
         $authResult = new AuthResult($username, $attrs);
         return $this->_stateMgr->set('authResult', $authResult);
     }
-
+    
     /**
      * Get the default URL to redirect to
      *
@@ -78,7 +78,7 @@ class IdP extends Junction {
      */
     public function getRedirectUrl()
     {
-        return $this->_config->spUrl;
+        return $this->_config->postLogoutUrl;
     }
     
     /**
@@ -99,20 +99,6 @@ class IdP extends Junction {
         parent::redirect($url, $exitAfter);
     }
 
-    /**
-     * Clear the user's state and redirect them to the logout URL
-     * 
-     * @param bool $redirect
-     * @param bool $exitAfterRedirect
-     */
-    public function logout($redirect = true, $exitAfterRedirect = true)
-    {
-        $this->_stateMgr->forget();
-        if ($redirect) {
-            $this->redirect($this->_config->postLogoutUrl, $exitAfterRedirect);
-        }
-    }
-    
     /**
      * @var \Shibalike\Attr\IStore
      */
