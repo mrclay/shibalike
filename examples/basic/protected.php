@@ -1,11 +1,17 @@
 <?php
+/**
+ * This demonstrates the emulation of shibboleth protection. If there's a valid shibalike
+ * session, the $_SERVER attributes will be available. If not, program flow will end
+ * during requireValidUser() and the user will be redirected to the idpUrl in the config.
+ */
 
-// the "SP"
 require '_inc.php';
 $sp = new Shibalike\SP(getStateManager(), getConfig());
 $sp->requireValidUser();
 
-
+if ($sp->username != 'jadmin') {
+    die('Only jadmin may see this resource. <a href="sp.php?sign-in">Sign in</a> as him.');
+}
 
 // your app's shibboleth auth module here
 

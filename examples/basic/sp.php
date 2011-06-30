@@ -1,4 +1,8 @@
 <?php
+/**
+ * Note, this script is just to emulate browser redirect flow in Shibboleth. You can use
+ * the SP methods in any location (before headers are sent)
+ */
 
 // the "SP"
 require '_inc.php';

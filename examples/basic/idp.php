@@ -1,8 +1,11 @@
 <?php
+/**
+ * All you need for an IdP is an authentication process and a way to get user
+ * attributes. Once you trust the identity of the user, you mark them as authenticated,
+ * which fetches and stores their attributes in the state manager.
+ */
 
-// the "IdP"
 require '_inc.php';
-
 $idp = new Shibalike\IdP(getStateManager(), getAttrStore(), getConfig());
 
 // crude authentication

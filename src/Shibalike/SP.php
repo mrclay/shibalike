@@ -17,6 +17,10 @@ use Shibalike\Junction;
  */
 class SP extends Junction {
 
+    public $username = null;
+    
+    public $userAttrs = array();
+    
     /**
      * Redirect to the IdP unless a valid user's attributes were merged in $_SERVER
      */
@@ -40,7 +44,8 @@ class SP extends Junction {
     }
     
     /**
-     * Get $_SERVER merged with user attributes (if available)
+     * Get $_SERVER merged with user attributes (if available), and set
+     * username/userAttrs properties.
      *
      * <code>
      * $_SERVER = $sp->mergeAttrs($_SERVER);
@@ -53,8 +58,9 @@ class SP extends Junction {
     {
         $authResult = $this->getValidAuthResult();
         if ($authResult) {
-            $server = array_merge($server, $authResult->getAttrs());
-            $server['REMOTE_USER'] = $authResult->getUsername();
+            $this->userAttrs = $authResult->getAttrs();
+            $server = array_merge($server, $this->userAttrs);
+            $server['REMOTE_USER'] = $this->username = $authResult->getUsername();
         }
         return $server;
     }

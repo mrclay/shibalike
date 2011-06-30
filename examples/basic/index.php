@@ -1,6 +1,9 @@
 <?php
+/**
+ * This demonstrates the emulation of "lazy" sessions. The $_SERVER attributes will only
+ * be appended to if the user's shibalike session is valid.
+ */
 
-// the "SP"
 require '_inc.php';
 $sp = new Shibalike\SP(getStateManager(), getConfig());
 $sp->initLazySession();
