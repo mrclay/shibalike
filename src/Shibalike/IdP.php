@@ -82,6 +82,16 @@ class IdP extends Junction {
     }
     
     /**
+     * Get the AuthRequest object from the state manager (if exists).
+     * 
+     * @return \Shibalike\AuthRequest|null
+     */
+    public function getAuthRequest()
+    {
+        return $this->_stateMgr->get('authRequest');
+    }
+    
+    /**
      * Close an open state manager/session and redirect the user
      *
      * @param string $url
