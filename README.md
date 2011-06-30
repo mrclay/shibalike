@@ -1,7 +1,7 @@
 # Shibalike
 
 Shibalike is a PHP library for emulating a limited [Shibboleth](http://en.wikipedia.org/wiki/Shibboleth_%28Internet2%29)
-environment, and has components to query attributes for a user, persist them in a cookie-based session, and inject them into the `$_SERVER` array as would a web server module.
+environment, and has components to query attributes for a user, persist them in a session (without interfering with native PHP sessions), and inject them into the `$_SERVER` array as would a web server module.
 
 This allows you to use your own authentication system (based on any mechanism) and
 attribute provider to sign users into any app with an existing Shibboleth auth module.
