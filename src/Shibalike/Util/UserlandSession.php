@@ -167,7 +167,7 @@ class UserlandSession {
      */
     public function start()
     {
-        if (headers_sent()) {
+        if (headers_sent() || $this->_id) {
             return false;
         }
         $this->data = array();
