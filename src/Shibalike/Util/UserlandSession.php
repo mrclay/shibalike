@@ -24,6 +24,8 @@ use Shibalike\Util\UserlandSession\Storage\Files;
  * this class in tandem with native sessions.
  * 
  * Also a tiny session fixation vulnerability has been prevented in start().
+ *
+ * @see http://svn.php.net/viewvc/php/php-src/trunk/ext/session/session.c?view=markup
  */
 class UserlandSession {
     const CACHE_LIMITER_NONE = '';
