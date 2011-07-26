@@ -61,7 +61,7 @@ class Files implements IStorage {
      */
     public function open()
     {
-        
+        return true;
     }
 
     /**
@@ -69,7 +69,7 @@ class Files implements IStorage {
      */
     public function close()
     {
-        
+        return true;
     }
 
     /**
