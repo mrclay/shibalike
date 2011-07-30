@@ -266,7 +266,7 @@ class UserlandSession {
             if ($removeCookie) {
                 $this->remove_cookie();
             }
-            $this->_storage->destroy($id);
+            $this->_storage->destroy($this->_id);
             $this->_storage->close();
             $this->_id = '';
             return true;

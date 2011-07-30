@@ -78,7 +78,7 @@ class IdP extends Junction {
      */
     public function getRedirectUrl()
     {
-        return $this->_config->postLogoutUrl;
+        return $this->_config->idpUrl;
     }
     
     /**
