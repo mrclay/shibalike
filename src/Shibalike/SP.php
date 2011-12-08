@@ -60,6 +60,9 @@ class SP extends Junction {
         if ($authResult) {
             $this->userAttrs = $authResult->getAttrs();
             $server = array_merge($server, $this->userAttrs);
+            if (! empty($this->_config->shibIdentityProvider)) {
+                $server['Shib-Identity-Provider'] = $this->_config->shibIdentityProvider;
+            }
             $server['REMOTE_USER'] = $this->username = $authResult->getUsername();
         }
         return $server;
@@ -102,6 +105,30 @@ class SP extends Junction {
         return empty($this->_returnUrl)
             ? Junction::getCurrentUrl()
             : $this->_returnUrl;
+    }
+
+    /**
+     * Creates an SP that stores session data in files
+     * @param string $idpUrl URL where the IdP class is used to handle SP auth requests
+     * @param string $cookieName
+     * @param string $sessionPath path where session files are stored
+     * @return SP|false false if a UserlandSession already exists under this cookie name
+     */
+    public static function createFileBased($idpUrl, $cookieName = 'SHIBALIKE', $sessionPath = null)
+    {
+        if (empty($sessionPath)) {
+            $sessionPath = sys_get_temp_dir();
+        }
+        $storage = new \Shibalike\Util\UserlandSession\Storage\Files($cookieName, array('path' => $sessionPath));
+        $session = \Shibalike\Util\UserlandSession::factory($storage);
+        if (! $storage) {
+            return false;
+        }
+        $stateMgr = new \Shibalike\StateManager\UserlandSession($session);
+        $config = new \Shibalike\Config();
+        $config->idpUrl = $idpUrl;
+
+        return new self($stateMgr, $config);
     }
     
     /**

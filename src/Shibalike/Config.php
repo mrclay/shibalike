@@ -5,7 +5,7 @@ namespace Shibalike;
 class Config {
 
     /**
-     * URL where the IdP class is used
+     * URL where the IdP class is used to handle SP auth requests
      * @var string
      */
     public $idpUrl = "";
@@ -20,4 +20,11 @@ class Config {
      * @var string no logging if empty
      */
     public $logFile = "";
+
+    /**
+     * Value merged as $_SERVER['Shib-Identity-Provider'] when attributes are merged.
+     * Some Shibboleth adapters expect something to be at that key.
+     * @var string
+     */
+    public $shibIdentityProvider = "/idp/shibalike";
 }
