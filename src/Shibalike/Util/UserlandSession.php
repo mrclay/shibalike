@@ -62,6 +62,41 @@ class UserlandSession {
     }
 
     /**
+     * Get a value from the session
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        if (! $this->_id) {
+            return $default;
+        }
+        return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+    }
+
+    /**
+     * Set a value (or multiple values if you pass in an associative array) in the session
+     * @param string|array $key
+     * @param mixed $value
+     * @return bool returns true if the session has been started
+     */
+    public function set($key, $value = null)
+    {
+        if (!$this->_id) {
+            return false;
+        }
+        if (is_array($key)) {
+            foreach ($key as $k => $value) {
+                $this->data[$k] = $value;
+            }
+        } else {
+            $this->data[$key] = $value;
+        }
+        return true;
+    }
+
+    /**
      * Users should consider using factory() to prevent cookie/storage name collisions.
      * 
      * @param Shibalike\Util\UserlandSession\IStorage $storage
