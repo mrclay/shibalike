@@ -49,12 +49,12 @@ class UserlandSession {
     /**
      * Persisted session data. Alter this file after start()-ing the session
      * 
-     * @var type array
+     * @var array
      */
     public $data = null;
 
     /**
-     * @return Shibalike\Util\UserlandSession\IStorage
+     * @return IStorage
      */
     public function get_storage()
     {
@@ -99,7 +99,9 @@ class UserlandSession {
     /**
      * Users should consider using factory() to prevent cookie/storage name collisions.
      * 
-     * @param Shibalike\Util\UserlandSession\IStorage $storage
+     * @param IStorage $storage
+     *
+     * @throws \Exception
      */
     public function __construct(IStorage $storage)
     {
@@ -115,8 +117,8 @@ class UserlandSession {
      * names that are unique (case-insentively) to avoid creating cookie/storage 
      * collisions. It also forbids using a name that matches the global setting session.name.
      * 
-     * @param Shibalike\Util\UserlandSession\IStorage $storage (will use Files if not specified)
-     * @return Shibalike\Util\UserlandSession
+     * @param IStorage $storage (will use Files if not specified)
+     * @return UserlandSession
      */
     public static function factory(IStorage $storage = null)
     {
@@ -378,6 +380,8 @@ class UserlandSession {
     }
 
     /**
+     * @param string $name
+     * @param string $id
      * @return bool
      */
     protected function _set_cookie($name, $id)
@@ -387,7 +391,7 @@ class UserlandSession {
     }
 
     /**
-     * @var Util_UserlandSession_IStorage
+     * @var IStorage
      */
     protected $_storage;
     

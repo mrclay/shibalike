@@ -101,6 +101,7 @@ class IdP extends Junction {
     {
         if (empty($url)) {
             $authRequest = $this->_stateMgr->get('authRequest');
+            /* @var AuthRequest $authRequest */
             if ($authRequest) {
                 $url = $authRequest->getReturnUrl();
                 $this->_stateMgr->set('authRequest');

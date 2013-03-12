@@ -40,6 +40,8 @@ class Pdo implements IStorage {
 
     /**
      * @return bool
+     *
+     * @throws \Exception
      */
     public function open()
     {

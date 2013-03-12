@@ -40,6 +40,7 @@ class Junction {
     public function getValidAuthResult()
     {
         $authResult = $this->_stateMgr->get('authResult');
+        /* @var \Shibalike\AuthResult $authResult */
         if ($authResult && $authResult->isFresh($this->_config->timeout)) {
             return $authResult;
         }

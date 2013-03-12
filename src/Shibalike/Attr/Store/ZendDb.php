@@ -23,8 +23,8 @@ class ZendDb implements IStore {
     }
 
     /**
-     * @param type $username
-     * @return type 
+     * @param string $username
+     * @return array
      */
     public function fetchAttrs($username)
     {

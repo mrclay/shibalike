@@ -36,4 +36,10 @@ interface IStateManager {
      * @return bool
      */
     public function likelyHasState();
+
+    /**
+     * Returns a string identifier for the user's session
+     * @return string
+     */
+    public function getSessionId();
 }

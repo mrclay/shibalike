@@ -8,7 +8,9 @@ class AuthResult extends Event {
     
     /**
      * @param string $username
-     * @param array $attrs 
+     * @param array $attrs
+     *
+     * @throws \Exception
      */
     public function __construct($username, array $attrs)
     {

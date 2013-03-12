@@ -14,6 +14,8 @@ class Files implements IStorage {
      * @param array $options for the storage container
      *    'flock' : lock files for read/write (true by default)
      *    'path' : save path for files
+     *
+     * @throws \Exception
      */
     public function __construct($name = 'SHIBALIKEID', array $options = array())
     {

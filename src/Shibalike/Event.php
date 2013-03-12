@@ -6,9 +6,6 @@ use Shibalike\Junction;
 
 class Event {
     
-    /**
-     * @param string $name
-     */
     public function __construct()
     {
         $this->_url = Junction::getCurrentUrl();

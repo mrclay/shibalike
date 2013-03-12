@@ -3,7 +3,6 @@
 namespace Shibalike\StateManager;
 
 use Shibalike\IStateManager;
-use Shibalike\User;
 use Shibalike\Util\UserlandSession as Sess;
 
 class UserlandSession implements IStateManager {
@@ -75,5 +74,10 @@ class UserlandSession implements IStateManager {
     public function likelyHasState()
     {
         return $this->_session->session_likely_exists();
+    }
+
+    public function getSessionId()
+    {
+        return $this->_session->id();
     }
 }

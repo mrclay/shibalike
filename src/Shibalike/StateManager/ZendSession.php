@@ -47,4 +47,9 @@ class StateManager_ZendSession implements IStateManager {
     {
         return \Zend_Session::sessionExists();
     }
+
+    public function getSessionId()
+    {
+        return session_id();
+    }
 }

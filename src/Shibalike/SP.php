@@ -3,6 +3,10 @@
 namespace Shibalike;
 
 use Shibalike\Junction;
+use Shibalike\Util\UserlandSession;
+use Shibalike\StateManager\UserlandSession as UserlandSessionStateMgr;
+use Shibalike\Util\UserlandSession\Storage\Files as SessionFileStorage;
+use Shibalike\Config;
 
 /**
  * Component for populating $_SERVER vars from a state manager
@@ -64,6 +68,7 @@ class SP extends Junction {
                 $server['Shib-Identity-Provider'] = $this->_config->shibIdentityProvider;
             }
             $server['REMOTE_USER'] = $this->username = $authResult->getUsername();
+            $server['Shib-Session-ID'] = $this->_stateMgr->getSessionId();
         }
         return $server;
     }
@@ -119,13 +124,13 @@ class SP extends Junction {
         if (empty($sessionPath)) {
             $sessionPath = sys_get_temp_dir();
         }
-        $storage = new \Shibalike\Util\UserlandSession\Storage\Files($cookieName, array('path' => $sessionPath));
-        $session = \Shibalike\Util\UserlandSession::factory($storage);
+        $storage = new SessionFileStorage($cookieName, array('path' => $sessionPath));
+        $session = UserlandSession::factory($storage);
         if (! $storage) {
             return false;
         }
-        $stateMgr = new \Shibalike\StateManager\UserlandSession($session);
-        $config = new \Shibalike\Config();
+        $stateMgr = new UserlandSessionStateMgr($session);
+        $config = new Config();
         $config->idpUrl = $idpUrl;
 
         return new self($stateMgr, $config);
