@@ -6,10 +6,10 @@
     },
 	"autoload": {
         "classmap": [
-            "src/Shibalike"
+            "src"
         ],
         "psr-0": {
-            "Shibalike\\": "src/"
+            "Shibalike\\": "src/Shibalike"
         }
     }
 }
