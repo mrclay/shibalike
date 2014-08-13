@@ -3,5 +3,13 @@
     "description": "A simple PHP library for emulating a Shibboleth environment. Forked from mrclay/shibalike for Composer and Packagist.",
     "require": {
         "php": ">=5.3.0"
-    }
+    },
+	"autoload": {
+        "classmap": [
+            "src/Shibalike",
+        ],
+        "psr-0": {
+            "Shibalike\\": "src/"
+        }
+    },
 }
