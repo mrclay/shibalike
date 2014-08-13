@@ -7,7 +7,9 @@
 	"autoload": {
         "classmap": [
             "src",
-			"src/Shibalike"
+			"src/Shibalike",
+			"src/Shibalike/Attr",
+			"src/Shibalike/Util"
         ],
         "psr-0": {
             "Shibalike\\": "src/Shibalike"
