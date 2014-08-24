@@ -2,17 +2,14 @@
 
 namespace Shibalike;
 
-use Shibalike\IStateManager;
-use Shibalike\Config;
-
 /**
  * 
  */
 class Junction {
 
     /**
-     * @param \Shibalike\IStateManager $stateMgr
-     * @param \Shibalike\Config $config 
+     * @param IStateManager $stateMgr
+     * @param Config $config
      */
     public function __construct(IStateManager $stateMgr, Config $config)
     {
@@ -35,12 +32,12 @@ class Junction {
     /**
      * Get the User object from the state manager
      *
-     * @return \Shibalike\AuthResult|null
+     * @return AuthResult|null
      */
     public function getValidAuthResult()
     {
         $authResult = $this->_stateMgr->get('authResult');
-        /* @var \Shibalike\AuthResult $authResult */
+        /* @var AuthResult $authResult */
         if ($authResult && $authResult->isFresh($this->_config->timeout)) {
             return $authResult;
         }
@@ -106,12 +103,12 @@ class Junction {
     }
 
     /**
-     * @var \Shibalike\IStateManager
+     * @var IStateManager
      */
     protected $_stateMgr;
     
     /**
-     * @var \Shibalike\Config
+     * @var Config
      */
     protected $_config;
     

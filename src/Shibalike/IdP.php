@@ -2,10 +2,7 @@
 
 namespace Shibalike;
 
-use Shibalike\IStateManager;
-use Shibalike\Config;
 use Shibalike\Attr\IStore;
-use Shibalike\Junction;
 
 /**
  * Component for marking user as authenticated. For use in a "login" script.
@@ -34,9 +31,9 @@ use Shibalike\Junction;
 class IdP extends Junction {
 
     /**
-     * @param \Shibalike\IStateManager $stateMgr
-     * @param \Shibalike\IStore $store
-     * @param \Shibalike\Config $config
+     * @param IStateManager $stateMgr
+     * @param IStore $store
+     * @param Config $config
      */
     public function __construct(IStateManager $stateMgr, IStore $store, Config $config)
     {
@@ -84,7 +81,7 @@ class IdP extends Junction {
     /**
      * Get the AuthRequest object from the state manager (if exists).
      * 
-     * @return \Shibalike\AuthRequest|null
+     * @return AuthRequest|null
      */
     public function getAuthRequest()
     {
@@ -111,7 +108,7 @@ class IdP extends Junction {
     }
 
     /**
-     * @var \Shibalike\Attr\IStore
+     * @var IStore
      */
     protected $_store;
 }

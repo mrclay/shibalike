@@ -1,16 +1,18 @@
 <?php
 
-require dirname(__DIR__) . '/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 function getStateManager() {
-    $storage = new Shibalike\Util\UserlandSession\Storage\Files('SHIBALIKE_BASIC');
-    $session = Shibalike\Util\UserlandSession::factory($storage);
-    return new Shibalike\StateManager\UserlandSession($session);
+	$session = \UserlandSession\SessionBuilder::instance()
+		->setSavePath(sys_get_temp_dir())
+		->setName('SHIBALIKE_BASIC')
+		->build();
+    return new \Shibalike\StateManager\UserlandSession($session);
 }
 
 // normally a DB
 function getAttrStore() {
-    return new Shibalike\Attr\Store\ArrayStore(array(
+    return new \Shibalike\Attr\Store\ArrayStore(array(
         'jadmin' => array(
             'uid' => 1111,
             'displayname' => 'Johnny Admin',
@@ -23,7 +25,7 @@ function getAttrStore() {
 }
 
 function getConfig() {
-    $config = new Shibalike\Config();
+    $config = new \Shibalike\Config();
     $config->idpUrl = 'idp.php';
     return $config;
 }

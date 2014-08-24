@@ -3,17 +3,17 @@
 namespace Shibalike\StateManager;
 
 use Shibalike\IStateManager;
-use Shibalike\Util\UserlandSession as Sess;
+use UserlandSession\Session as Sess;
 
 class UserlandSession implements IStateManager {
 
     /**
-     * @var \Shibalike\Util\UserlandSession
+     * @var Sess
      */
     protected $_session;
 
     /**
-     * @param \Shibalike\Util\UserlandSession $session 
+     * @param Sess $session
      */
     public function __construct(Sess $session)
     {
@@ -30,7 +30,7 @@ class UserlandSession implements IStateManager {
 
     public function writeClose()
     {
-        $this->_session->write_close();
+        $this->_session->writeClose();
     }
     
     /**
@@ -40,7 +40,7 @@ class UserlandSession implements IStateManager {
     public function get($key)
     {
         if (! $this->_session->id()) {
-            if ($this->_session->session_likely_exists()) {
+            if ($this->_session->sessionLikelyExists()) {
                 $this->_session->start();
             } else {
                 return null;
@@ -73,7 +73,7 @@ class UserlandSession implements IStateManager {
     
     public function likelyHasState()
     {
-        return $this->_session->session_likely_exists();
+        return $this->_session->sessionLikelyExists();
     }
 
     public function getSessionId()

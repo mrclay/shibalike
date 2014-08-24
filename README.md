@@ -51,18 +51,10 @@ You might want to checkout [SimpleSAMLphp](http://simplesamlphp.org/), an impres
 ### UserlandSession
 
 By default, Shibalike persists auth/user data in a 
-[non-native session component](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/Util/UserlandSession.php),
+[non-native session component](https://github.com/mrclay/UserlandSession),
 which operates very similarly to native sessions, but which can be used independently of 
 them. This allows Shibalike to maintain its state across applications without any 
 interference with the native sessions used in those apps.
-
-`UserlandSession` is loosely-coupled and introduces no global state, so you can also use it
-to bridge state across applications for other purposes, as a non-global replacement for 
-native sessions, or just to better understand how native sessions work (more or less).
-
-The [storage interface](https://github.com/mrclay/shibalike/blob/master/src/Shibalike/Util/UserlandSession/IStorage.php)
-is similar to the native session's callback interface so that one can easily create a storage 
-class based on an existing set of callbacks used in session_set_save_handler().
 
 ## Completed Pieces
 
@@ -72,7 +64,6 @@ class based on an existing set of callbacks used in session_set_save_handler().
 * A simple attribute provider based on Zend Db and a single table.
 * A simple attribute provider based on a static array.
 * A [basic demo](https://github.com/mrclay/shibalike/tree/master/examples/basic) of a crude but operational usage.
-* A [demo of UserlandSession](https://github.com/mrclay/shibalike/blob/master/examples/UserlandSession/simultaneous.php) showing 3 simultaneous sessions, including a native one.
 
 ## License
 

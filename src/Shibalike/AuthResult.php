@@ -2,8 +2,6 @@
 
 namespace Shibalike;
 
-use Shibalike\Event;
-
 class AuthResult extends Event {
     
     /**

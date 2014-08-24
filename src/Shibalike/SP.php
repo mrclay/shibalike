@@ -2,11 +2,8 @@
 
 namespace Shibalike;
 
-use Shibalike\Junction;
-use Shibalike\Util\UserlandSession;
 use Shibalike\StateManager\UserlandSession as UserlandSessionStateMgr;
-use Shibalike\Util\UserlandSession\Storage\Files as SessionFileStorage;
-use Shibalike\Config;
+use UserlandSession\SessionBuilder;
 
 /**
  * Component for populating $_SERVER vars from a state manager
@@ -124,12 +121,11 @@ class SP extends Junction {
         if (empty($sessionPath)) {
             $sessionPath = sys_get_temp_dir();
         }
-        $storage = new SessionFileStorage($cookieName, array('path' => $sessionPath));
-        $session = UserlandSession::factory($storage);
-        if (! $storage) {
-            return false;
-        }
-        $stateMgr = new UserlandSessionStateMgr($session);
+		$session = SessionBuilder::instance()
+			->setName($cookieName)
+			->setSavePath($sessionPath)
+			->build();
+		$stateMgr = new UserlandSessionStateMgr($session);
         $config = new Config();
         $config->idpUrl = $idpUrl;
 

@@ -2,8 +2,6 @@
 
 namespace Shibalike;
 
-use Shibalike\Junction;
-
 class Event {
     
     public function __construct()
